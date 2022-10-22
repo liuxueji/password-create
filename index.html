@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+
+<body>
+  <div id="app">
+    <h1>{{titles}}</h1>
+    <div>
+      0-9：<el-switch v-model="numbers"></el-switch>
+      a-z：<el-switch v-model="upwer"></el-switch>
+      A-Z：<el-switch v-model="lower"></el-switch>
+      特殊字符：<el-switch v-model="special"></el-switch>
+    </div>
+    <br />
+
+    <div>
+      长度:
+      <input v-model="passwdLen" type="number">
+    </div>
+    <br />
+
+
+    <div>
+      <button @click="buildPasswd">生成密码</button>
+    </div>
+
+    <br />
+    <div>
+      {{passwd}}
+    </div>
+  </div>
+  <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script>
+    new Vue({
+      el: "#app",
+      data: {
+        titles: "密码生成器",
+        passwdLen: 12,
+        passwd: "",
+        numbers: false,
+        upwer: false,
+        lower: false,
+        special: false
+      },
+      methods: {
+        buildPasswd() {
+          let passwdArray = [];
+          let randPass = "";
+
+          // 这里利用ASCII码，根据 Unicode 值显示字符串。例如：97 ==> a
+          // 将满足的ASCII码push到字典池中，再从字典池中随机生成长度为x的密码。
+          // 数字
+          if (this.numbers) {
+            console.log(this.numbers)
+            for (let Unicode = 48; Unicode < 58; Unicode++) {
+              passwdArray.push(String.fromCharCode(Unicode))
+            }
+          }
+
+          // 小写字母
+          if (this.lower) {
+            for (let Unicode = 97; Unicode < 123; Unicode++) {
+              passwdArray.push(String.fromCharCode(Unicode))
+            }
+          }
+
+          // 大写字母
+          if (this.upwer) {
+            for (let Unicode = 65; Unicode < 91; Unicode++) {
+              passwdArray.push(String.fromCharCode(Unicode))
+            }
+          }
+
+          // 特殊字符
+          if (this.special) {
+            for (let Unicode = 33; Unicode < 47; Unicode++) {
+              passwdArray.push(String.fromCharCode(Unicode))
+            }
+          }
+
+          // 生成密码
+          for (let Unicode = 0; Unicode < this.passwdLen; Unicode++) {
+            let n = Math.floor(Math.random() * passwdArray.length)
+            randPass = randPass.concat(passwdArray[n])
+          }
+
+          // 密码
+          this.passwd = randPass
+
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
