@@ -1,168 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+    />
+  </head>
+  <style>
+    .head {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-</head>
-<style>
-  .head {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+    .build-passwd {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-  .build-passwd {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    .build-passwd div {
+      margin-left: 10px;
+    }
 
-  .build-passwd div {
-    margin-left: 10px;
-  }
+    .build-passwd div span {
+      color: skyblue;
+    }
 
-  .build-passwd div span {
-    color: skyblue
-  }
+    .el-col {
+      margin: 50px;
+    }
+  </style>
 
-  .el-col {
-    margin: 50px;
-  }
-</style>
+  <body>
+    <div id="app">
+      <div class="head">
+        <h1>{{ titles }}</h1>
+        <h2>创建强大安全的密码，确保您的在线帐户安全无虞。</h2>
+      </div>
+      <el-row>
+        <el-col :span="10">
+          <el-card class="box-card">
+            <div slot="header">
+              <h2>所用字符</h2>
+            </div>
+            <el-checkbox v-model="numbers" label="数字"></el-checkbox>
+            <el-checkbox v-model="lower" label="小写字母"></el-checkbox>
+            <el-checkbox v-model="upwer" label="大写字母"></el-checkbox>
+            <el-checkbox v-model="special" label="特殊字符"></el-checkbox>
+          </el-card>
+        </el-col>
+        <el-col :span="10">
+          <el-card class="box-card">
+            <div slot="header">
+              <h2>其他设置</h2>
+            </div>
+            <el-checkbox v-model="noRepeat" label="去除重复"></el-checkbox>
+          </el-card>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="10">
+          <el-card class="box-card">
+            <div slot="header">
+              <h2>密码长度：{{ passwdLen }}</h2>
+            </div>
+            <el-slider
+              v-model="passwdLen"
+              :min="5"
+              :max="20"
+              :step="1"
+              show-stops
+              show-input
+            >
+            </el-slider>
+          </el-card>
+        </el-col>
+        <el-col :span="10">
+          <div class="build-passwd">
+            <el-button @click="buildPasswd" round>生成密码</el-button>
+            <el-button @click="copyPwd" round>复制密码</el-button>
+            <div>密码强度评估：<span>比较安全</span></div>
+          </div>
+        </el-col>
+      </el-row>
 
-<body>
-  <div id="app">
-    <div class="head">
-      <h1>{{titles}}</h1>
-      <h2>创建强大安全的密码，确保您的在线帐户安全无虞。</h2>
+      <el-col :span="20">
+        <el-input
+          id="passwd"
+          type="textarea"
+          :rows="2"
+          placeholder="待生成随机密码..."
+          v-model="passwd"
+        >
+        </el-input>
+      </el-col>
     </div>
-    <el-row>
-      <el-col :span="10">
-        <el-card class="box-card">
-          <div slot="header">
-            <h2>所用字符</h2>
-          </div>
-          <el-checkbox v-model="numbers" label="数字"></el-checkbox>
-          <el-checkbox v-model="lower" label="小写字母"></el-checkbox>
-          <el-checkbox v-model="upwer" label="大写字母"></el-checkbox>
-          <el-checkbox v-model="special" label="特殊字符"></el-checkbox>
-        </el-card>
-      </el-col>
-      <el-col :span="10">
-        <el-card class="box-card">
-          <div slot="header">
-            <h2>其他设置</h2>
-          </div>
-          <el-checkbox v-model="noRepeat" label="去除重复"></el-checkbox>
-        </el-card>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="10">
-        <el-card class="box-card">
-          <div slot="header">
-            <h2>密码长度：{{passwdLen}}</h2>
-          </div>
-          <el-slider v-model="passwdLen"></el-slider>
-        </el-card>
-      </el-col>
-      <el-col :span="10">
-        <div class="build-passwd">
-          <el-button @click="buildPasswd" round>生成密码</el-button>
-          <el-button @click="copyPwd" round>复制密码</el-button>
-          <div>密码强度评估：<span>比较安全</span></div>
-        </div>
-      </el-col>
-    </el-row>
-
-    <el-col :span="20">
-
-      <el-input id="passwd" type="textarea" :rows="2" placeholder="待生成随机密码..." v-model="passwd">
-      </el-input>
-    </el-col>
-
-  </div>
-  <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
-  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
-  <script>
-    new Vue({
-      el: "#app",
-      data: {
-        titles: "极简密码生成器",
-        passwdLen: 10,
-        passwd: "",
-        numbers: true,
-        lower: true,
-        upwer: false,
-        special: false,
-        noRepeat: false
-      },
-      methods: {
-        buildPasswd() {
-          // console.log(this.passwdTypes)
-          let passwdArray = [];
-          let randPass = "";
-
-          // 这里利用ASCII码，根据 Unicode 值显示字符串。例如：97 ==> a
-          // 将满足的ASCII码push到字典池中，再从字典池中随机生成长度为x的密码。
-          // 数字
-          if (this.numbers) {
-            for (let Unicode = 48; Unicode < 58; Unicode++) {
-              passwdArray.push(String.fromCharCode(Unicode))
-            }
-          }
-
-          // 小写字母
-          if (this.upwer) {
-            for (let Unicode = 65; Unicode < 91; Unicode++) {
-              passwdArray.push(String.fromCharCode(Unicode))
-            }
-          }
-
-          // 大写字母
-          if (this.lower) {
-            for (let Unicode = 97; Unicode < 123; Unicode++) {
-              passwdArray.push(String.fromCharCode(Unicode))
-            }
-          }
-
-          // 特殊字符
-          if (this.special) {
-            for (let Unicode = 33; Unicode < 47; Unicode++) {
-              passwdArray.push(String.fromCharCode(Unicode))
-            }
-          }
-
-          // 生成密码
-          for (let Unicode = 0; Unicode < this.passwdLen; Unicode++) {
-            let n = Math.floor(Math.random() * passwdArray.length)
-            // 如果选择了去重，则通过includes判断是否重复
-            if (this.noRepeat && randPass.includes(n)) {
-              Unicode--;
-            } else {
-              randPass = randPass.concat(passwdArray[n])
-            }
-
-          }
-
-          // 密码
-          this.passwd = randPass
-
+    <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script>
+      new Vue({
+        el: "#app",
+        data: {
+          titles: "极简密码生成器",
+          passwdLen: 10,
+          passwd: "",
+          numbers: true,
+          lower: true,
+          upwer: false,
+          special: false,
+          noRepeat: false
         },
+        methods: {
+          buildPasswd() {
+            // console.log(this.passwdTypes)
+            let passwdArray = [];
+            let randPass = "";
 
-        copyPwd() {
-          const input = document.getElementById('passwd')
-          input.select() //选择对象
-          let copyText = document.execCommand('Copy') //执行浏览器的复制命令
-          if (copyText) this.$message.success('复制成功')
+            // 这里利用ASCII码，根据 Unicode 值显示字符串。例如：97 ==> a
+            // 将满足的ASCII码push到字典池中，再从字典池中随机生成长度为x的密码。
+            // 数字
+            if (this.numbers) {
+              for (let Unicode = 48; Unicode < 58; Unicode++) {
+                passwdArray.push(String.fromCharCode(Unicode));
+              }
+            }
+
+            // 小写字母
+            if (this.upwer) {
+              for (let Unicode = 65; Unicode < 91; Unicode++) {
+                passwdArray.push(String.fromCharCode(Unicode));
+              }
+            }
+
+            // 大写字母
+            if (this.lower) {
+              for (let Unicode = 97; Unicode < 123; Unicode++) {
+                passwdArray.push(String.fromCharCode(Unicode));
+              }
+            }
+
+            // 特殊字符
+            if (this.special) {
+              for (let Unicode = 33; Unicode < 47; Unicode++) {
+                passwdArray.push(String.fromCharCode(Unicode));
+              }
+            }
+
+            // 生成密码
+            for (let Unicode = 0; Unicode < this.passwdLen; Unicode++) {
+              let n = Math.floor(Math.random() * passwdArray.length);
+              // 如果选择了去重，则通过includes判断是否重复
+              if (this.noRepeat && randPass.includes(n)) {
+                Unicode--;
+              } else {
+                randPass = randPass.concat(passwdArray[n]);
+              }
+            }
+
+            // 密码
+            this.passwd = randPass;
+          },
+
+          copyPwd() {
+            const input = document.getElementById("passwd");
+            input.select(); //选择对象
+            let copyText = document.execCommand("Copy"); //执行浏览器的复制命令
+            if (copyText) this.$message.success("复制成功");
+          }
         }
-      }
-    })
-  </script>
-</body>
-
+      });
+    </script>
+  </body>
 </html>
